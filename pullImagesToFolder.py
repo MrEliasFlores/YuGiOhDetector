@@ -19,8 +19,11 @@ def cDict():
         cardId.append(card['id'])
         cardName.append(card['name'])
 
-    cardName = [re.sub('[:☆★/"!?]', '', item) for item in cardName]
+    cardName = [re.sub('[:☆★/"!?Üéäα]', '', item) for item in cardName]
     cardName = [re.sub('[-]', ' ', item) for item in cardName]
+    cardName = [re.sub('[Üü]', 'u', item) for item in cardName]
+    cardName = [re.sub('[é]', 'e', item) for item in cardName]
+    cardName = [re.sub('[äα]', 'a', item) for item in cardName]
     cardName = [re.sub('\s\s+', ' ', item) for item in cardName]
     cardName = [re.sub(r'\s+$', '', item) for item in cardName]
 
@@ -35,7 +38,7 @@ def idMaker(d, name):
         return ids[0]
     return None
 
-def createBaseImage():
+def createBaseImageFolder():
     if not os.path.isdir(baseImages):
         os.mkdir(baseImages)
         print('Created base image folder\n')
@@ -53,15 +56,15 @@ def downloadImages(cardDict, message):
         if message == 0:
             print("Please wait while images are downloaded\n")
 
-        if not os.path.isdir(os.path.join(baseImages, str(cardDict.get(ids)))):
-            os.makedirs(os.path.join(baseImages, str(cardDict.get(ids))))
-            print('Created the image folder')
+#        if not os.path.isdir(os.path.join(baseImages, str(cardDict.get(ids)))):
+#            os.makedirs(os.path.join(baseImages, str(cardDict.get(ids))))
+#            print('Created the image folder')
 
-        direc = (baseImages + str(cardDict.get(ids)) + '/')
-        os.chdir(direc)
-        print(direc)
+#        direc = (baseImages + str(cardDict.get(ids)) + '/')
+#        os.chdir(direc)
+#        print(direc)
 
-        if os.path.exists(direc + names + '.jpg'):
+        if os.path.exists(baseImages + names + '.jpg'):
             print('Picture exists\n')
             continue
 
@@ -73,6 +76,7 @@ def downloadImages(cardDict, message):
         os.chdir(baseImages)
         message = 1
 
+
 if __name__ == '__main__':
-    createBaseImage()
+    createBaseImageFolder()
     downloadImages(cD, m)
