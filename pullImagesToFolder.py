@@ -22,8 +22,7 @@ def cDict():
     cardName = [re.sub('[:☆★/"!?]', '', item) for item in cardName]
     cardName = [re.sub('[-]', ' ', item) for item in cardName]
     cardName = [re.sub('\s\s+', ' ', item) for item in cardName]
-    cardName = [re.sub(r"s+$", '', item) for item in cardName]
-
+    cardName = [re.sub(r'\s+$', '', item) for item in cardName]
 
     cD = {cardId[i]: cardName[i] for i in range(len(cardId))}
 
@@ -54,8 +53,6 @@ for ids, names in tqdm(cardDict.items()):
         os.makedirs(os.path.join(baseImages, str(cardDict.get(ids))))
         print('Created the image folder')
 
-    fetch = requests.get(imgUrl + str(idMaker(cardDict, names)) + '.jpg')
-
     direc = (baseImages + str(cardDict.get(ids)) + '/')
     os.chdir(direc)
     print(direc)
@@ -65,6 +62,7 @@ for ids, names in tqdm(cardDict.items()):
         continue
 
     with open(names+'.jpg', 'wb') as f:
+        fetch = requests.get(imgUrl + str(idMaker(cardDict, names)) + '.jpg')
         f.write(fetch.content)
         f.close()
         time.sleep(0.08)
