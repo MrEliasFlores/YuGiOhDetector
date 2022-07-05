@@ -22,6 +22,8 @@ def cDict():
     cardName = [re.sub('[:☆★/"!?]', '', item) for item in cardName]
     cardName = [re.sub('[-]', ' ', item) for item in cardName]
     cardName = [re.sub('\s\s+', ' ', item) for item in cardName]
+    cardName = [re.sub(r"s+$", '', item) for item in cardName]
+
 
     cD = {cardId[i]: cardName[i] for i in range(len(cardId))}
 
@@ -37,19 +39,20 @@ def idMaker(d, name):
 
 if not os.path.isdir(baseImages):
     os.mkdir(baseImages)
-    print('Created Base Image Folder\n')
+    print('Created base image folder\n')
 else:
-    print('Base Image folder Exists\n')
+    print('Base image folder exists\n')
 
 
 cardDict = cDict()
 
-print("Please Wait while Images are Downloaded\n")
+print("Please wait while images are downloaded\n")
 
 for ids, names in tqdm(cardDict.items()):
 
     if not os.path.isdir(os.path.join(baseImages, str(cardDict.get(ids)))):
         os.makedirs(os.path.join(baseImages, str(cardDict.get(ids))))
+        print('Created the image folder')
 
     fetch = requests.get(imgUrl + str(idMaker(cardDict, names)) + '.jpg')
 
@@ -58,7 +61,7 @@ for ids, names in tqdm(cardDict.items()):
     print(direc)
 
     if os.path.exists(direc + names + '.jpg'):
-        print('Picture Exists\n')
+        print('Picture exists\n')
         continue
 
     with open(names+'.jpg', 'wb') as f:
