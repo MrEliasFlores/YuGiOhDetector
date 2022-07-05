@@ -3,11 +3,11 @@ import numpy as np
 import imageio
 import imgaug as iaa
 from imgaug import augmenters as ia
-from pullImagesToFolder import cDict, idMaker
+from pullImagesToFolder import cDict
 
 home = os.getcwd()
 collages = os.getcwd() + '/collages/'
-baseImages = os.getcwd()+ '/baseImages/'
+baseImages = os.getcwd() + '/baseImages/'
 cardDict = cDict()
 
 
@@ -17,9 +17,10 @@ def createCollageFolders():
         os.mkdir(collages)
         print('Created collage folder\n')
     else:
-        print('collage folder exists\n')
+        print('Collage folder exists\n')
 
     os.chdir(collages)
+
     for ids, names in cardDict.items():
         if not os.path.isdir(os.path.join(collages, str(cardDict.get(ids)))):
             os.makedirs(os.path.join(collages, str(cardDict.get(ids))))
@@ -31,8 +32,7 @@ createCollageFolders()
 pic = []
 resize = [421, 614]
 
-for entry in createCollageFolders():
-    print(entry.name)
+
 
 
 #

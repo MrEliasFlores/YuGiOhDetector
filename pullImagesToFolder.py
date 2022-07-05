@@ -24,9 +24,9 @@ def cDict():
     cardName = [re.sub('\s\s+', ' ', item) for item in cardName]
     cardName = [re.sub(r'\s+$', '', item) for item in cardName]
 
-    cD = {cardId[i]: cardName[i] for i in range(len(cardId))}
+    cardDictionary = {cardId[i]: cardName[i] for i in range(len(cardId))}
 
-    return cD
+    return cardDictionary
 
 
 def idMaker(d, name):
@@ -35,35 +35,44 @@ def idMaker(d, name):
         return ids[0]
     return None
 
+def createBaseImage():
+    if not os.path.isdir(baseImages):
+        os.mkdir(baseImages)
+        print('Created base image folder\n')
+    else:
+        print('Base image folder exists\n')
 
-if not os.path.isdir(baseImages):
-    os.mkdir(baseImages)
-    print('Created base image folder\n')
-else:
-    print('Base image folder exists\n')
+
+cD = cDict()
+m = 0
 
 
-cardDict = cDict()
+def downloadImages(cardDict, message):
 
-print("Please wait while images are downloaded\n")
+    for ids, names in tqdm(cardDict.items()):
+        if message == 0:
+            print("Please wait while images are downloaded\n")
 
-for ids, names in tqdm(cardDict.items()):
+        if not os.path.isdir(os.path.join(baseImages, str(cardDict.get(ids)))):
+            os.makedirs(os.path.join(baseImages, str(cardDict.get(ids))))
+            print('Created the image folder')
 
-    if not os.path.isdir(os.path.join(baseImages, str(cardDict.get(ids)))):
-        os.makedirs(os.path.join(baseImages, str(cardDict.get(ids))))
-        print('Created the image folder')
+        direc = (baseImages + str(cardDict.get(ids)) + '/')
+        os.chdir(direc)
+        print(direc)
 
-    direc = (baseImages + str(cardDict.get(ids)) + '/')
-    os.chdir(direc)
-    print(direc)
+        if os.path.exists(direc + names + '.jpg'):
+            print('Picture exists\n')
+            continue
 
-    if os.path.exists(direc + names + '.jpg'):
-        print('Picture exists\n')
-        continue
+        with open(names+'.jpg', 'wb') as f:
+            fetch = requests.get(imgUrl + str(idMaker(cardDict, names)) + '.jpg')
+            f.write(fetch.content)
+            f.close()
+            time.sleep(0.08)
+        os.chdir(baseImages)
+        message = 1
 
-    with open(names+'.jpg', 'wb') as f:
-        fetch = requests.get(imgUrl + str(idMaker(cardDict, names)) + '.jpg')
-        f.write(fetch.content)
-        f.close()
-        time.sleep(0.08)
-    os.chdir(baseImages)
+if __name__ == '__main__':
+    createBaseImage()
+    downloadImages(cD, m)
